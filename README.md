@@ -39,4 +39,6 @@ Filter pills surface the subset relevant to each track + cross-cutting situation
 
 ## Provenance
 
-This is a private repository. Content is curated from primary sources (Minerva University, Munger / Farnam Street, Snowden, Boyd, Klein, Scharmer, Sarasvathy, Kahneman, Tetlock, de Bono, Toulmin, Cialdini, Beck/Cowan, et al.). Where the canonical list is incomplete or evolving, provenance is noted in the relevant deep-dive page.
+Content is curated from primary sources (Minerva University, Munger / Farnam Street, Snowden, Boyd, Klein, Scharmer, Sarasvathy, Kahneman, Tetlock, de Bono, Toulmin, Cialdini, Beck/Cowan, et al.). Where the canonical list is incomplete or evolving, provenance is noted in the relevant deep-dive page.
+
+This repository is part of an ongoing personal exploration. Pages are intentionally rough; expect iteration.
