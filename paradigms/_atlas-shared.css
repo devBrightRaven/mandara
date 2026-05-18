@@ -1,0 +1,531 @@
+/* Shared styles for paradigm deep-dive pages. Sister files: _atlas-shared.js, individual <paradigm>.html */
+
+/* ========= Theme: cyber / Tron-Legacy-meets-tech-doc =========
+   Deep cool palette + neon accents in restraint. Tokens keep
+   semantic names (paper/ink/cat) so existing classes keep working —
+   only the values change.
+*/
+:root {
+  /* Surfaces — deep navy graphite, ascending elevation */
+  --paper: #0F1923;          /* base bg, deepest */
+  --paper-deep: #18222E;     /* sticky nav, header gradient stop */
+  --paper-edge: #243447;     /* elevated bands, callouts */
+  --card-bg: #1A2532;        /* cards stand on base */
+
+  /* Text — light off-white scale (all pass WCAG 1.4.3 on --paper) */
+  --ink: #E8ECF0;            /* primary text · 15:1 */
+  --ink-soft: #C5CDD6;       /* body soft · 10:1 */
+  --ink-mute: #8A95A3;       /* secondary · 6:1 */
+  --ink-faint: #7A8694;      /* tertiary, meta · 4.9:1 (was #5F6B7A 3.1:1 — bumped) */
+
+  /* Borders (UI components require 3:1 per WCAG 1.4.11) */
+  --hairline: #4F6985;       /* visible separators · 3.2:1 (was #3A4F65 2.1:1 — bumped) */
+  --hairline-soft: #2D3F54;  /* subtle dividers (decorative, exempt from 3:1) */
+
+  /* Cat accents — cyberpunk-tinted */
+  --cat-1: #FF6B47;          /* laser coral · Latticework (collection) */
+  --cat-2: #FFB627;          /* amber · Curriculum */
+  --cat-3: #00E699;          /* neon mint · Cynefin / route */
+  --cat-4: #00BCD4;          /* electric cyan · Loop */
+  --cat-5: #B0BEC5;          /* silver chrome · Anti-Bias / reflection */
+  --cat-6: #FF2E92;          /* magenta · Container / Frame */
+
+  /* Typography — Inter body + Space Grotesk display + JetBrains Mono labels
+     + Noto Sans JP for マンダラ display + Noto Sans TC for 繁中 */
+  --serif: 'Space Grotesk', 'Inter', 'Noto Sans JP', 'Noto Sans TC', system-ui, sans-serif;
+  --sans: 'Inter', 'Noto Sans JP', 'Noto Sans TC', -apple-system, system-ui, "Segoe UI", "Microsoft JhengHei", sans-serif;
+  --mono: 'JetBrains Mono', 'Fira Code', "SF Mono", Consolas, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;            /* was 15 — bigger, easier reading */
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Subtle scanline / grid feel — very low contrast, off by default in reduced-motion */
+  background-image:
+    linear-gradient(180deg, rgba(0, 217, 255, 0.025) 0%, rgba(0, 0, 0, 0) 60%),
+    radial-gradient(ellipse at 50% 0%, rgba(255, 46, 146, 0.04) 0%, rgba(0, 0, 0, 0) 50%);
+  background-attachment: fixed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body { background-image: none; }
+}
+
+/* High-contrast boost — punch up borders + faint text */
+@media (prefers-contrast: more) {
+  :root {
+    --hairline: #6F8AAB;       /* ~4.5:1 against --paper */
+    --hairline-soft: #4A6280;
+    --ink-faint: #9AA5B3;      /* ~6:1 */
+    --ink-mute: #B0BCCB;       /* ~8:1 */
+  }
+}
+
+/* Light-mode fallback — user explicitly prefers light despite cyber theme.
+   Map cyber tokens back to paper aesthetic so the page remains usable.
+   Maintains all class names; only token values flip. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="cyber"]) {
+    --paper: #F2EEDF;
+    --paper-deep: #E5DCC4;
+    --paper-edge: #D6CBA8;
+    --card-bg: #FBFAF4;
+    --ink: #1A1A1A;
+    --ink-soft: #2E2E2E;
+    --ink-mute: #5C5C5C;
+    --ink-faint: #6B6655;
+    --hairline: #8C8170;
+    --hairline-soft: #BDB39A;
+    --cat-1: #A04F33;
+    --cat-2: #8A6E1F;
+    --cat-3: #5C7A4F;
+    --cat-4: #3D5C8C;
+    --cat-5: #4A4A4A;
+    --cat-6: #7A4A6A;
+  }
+  :root:not([data-theme="cyber"]) body { background-image: none; }
+}
+
+/* Custom selection color — cyan tint */
+::selection { background: rgba(0, 188, 212, 0.35); color: var(--ink); }
+
+/* ========= Top nav (replaces atlas's heavy header) ========= */
+.paradigm-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+  padding: 12px 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.paradigm-nav .back-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  text-decoration: none;
+  border: 1px solid var(--hairline);
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.18s ease;
+}
+.paradigm-nav .back-link:hover {
+  background: var(--paper-deep);
+  border-color: var(--ink-mute);
+  color: var(--ink);
+}
+.paradigm-nav .breadcrumb {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.paradigm-nav .breadcrumb strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+.paradigm-nav .nav-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.paradigm-nav .nav-chips .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-right: 4px;
+}
+.paradigm-nav .nav-chip {
+  font-size: 12px;
+  padding: 3px 10px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  font-weight: 500;
+}
+.paradigm-nav .nav-empty {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 13px;
+}
+
+/* ========= Page header ========= */
+.paradigm-head {
+  padding: 56px 64px 36px 64px;
+  border-bottom: 1px solid var(--hairline);
+  background: linear-gradient(180deg, var(--paper-deep) 0%, var(--paper) 100%);
+  position: relative;
+}
+.paradigm-head .cat-stripe {
+  width: 32px;
+  height: 4px;
+  background: currentColor;
+  margin-bottom: 14px;
+}
+.paradigm-head[data-cat="1"] { color: var(--cat-1); }
+.paradigm-head[data-cat="2"] { color: var(--cat-2); }
+.paradigm-head[data-cat="3"] { color: var(--cat-3); }
+.paradigm-head[data-cat="4"] { color: var(--cat-4); }
+.paradigm-head[data-cat="5"] { color: var(--cat-5); }
+.paradigm-head[data-cat="6"] { color: var(--cat-6); }
+.paradigm-head .cat-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: currentColor;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.paradigm-head h1 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 56px;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px 0;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.paradigm-head .name-en {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--ink-mute);
+  margin: 0 0 18px 0;
+}
+.paradigm-head .meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.paradigm-head .meta .dot { color: var(--ink-faint); margin: 0 8px; }
+.paradigm-head .philosophy {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 920px;
+  margin: 0 0 22px 0;
+}
+.paradigm-head .actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-primary, .btn-secondary {
+  padding: 10px 18px;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid var(--ink);
+  transition: all 0.18s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--cat-1); border-color: var(--cat-1); }
+.btn-primary.is-in { background: var(--paper); color: var(--ink); }
+.btn-primary.is-in:hover { background: var(--cat-1); color: var(--paper); border-color: var(--cat-1); }
+.btn-secondary { background: var(--paper); color: var(--ink); }
+.btn-secondary:hover { background: var(--paper-edge); }
+
+/* ========= Main + competency layout ========= */
+main {
+  padding: 0 64px 60px 64px;
+  max-width: 1640px;
+  margin: 0 auto;
+}
+
+.competency {
+  padding: 48px 0 32px 0;
+  border-bottom: 1px solid var(--hairline-soft);
+}
+.competency:last-of-type { border-bottom: none; }
+.competency-head {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+  align-items: baseline;
+  margin-bottom: 32px;
+}
+.competency .roman {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--cat-1);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.competency h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 32px;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px 0;
+  line-height: 1.1;
+}
+.competency .competency-en {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+.competency .course-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cat-1);
+  border: 1px solid var(--cat-1);
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-bottom: 14px;
+}
+.competency .competency-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 620px;
+}
+
+.section {
+  margin-bottom: 36px;
+}
+.section h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px 0;
+  color: var(--ink);
+}
+.section .section-en {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-mute);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.section .section-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-mute);
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+/* ========= HC card ========= */
+.hc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
+  gap: 16px;
+}
+.hc-card {
+  border: 1px solid var(--hairline);
+  background: var(--card-bg);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.hc-card[data-source="official"] {
+  background: var(--paper-deep);
+  border-color: var(--cat-1);
+}
+.hc-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.hc-tag {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cat-1);
+  letter-spacing: 0;
+}
+.hc-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.hc-meta abbr {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--ink-faint);
+  cursor: help;
+}
+.hc-meta .official-badge {
+  background: var(--cat-1);
+  color: var(--paper);
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+.hc-name-en {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.35;
+  color: var(--ink);
+  margin: 0 0 4px 0;
+}
+.hc-name-zh {
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.hc-definition {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--hairline-soft);
+}
+.hc-applications {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.app-row {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.app-row .app-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 2px;
+}
+.app-row .app-text {
+  color: var(--ink-soft);
+}
+.app-row .app-text.official-example {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-mute);
+}
+
+/* ========= Provenance + footer ========= */
+.provenance {
+  margin-top: 48px;
+  padding: 22px 26px;
+  background: var(--paper-deep);
+  border: 1px dashed var(--hairline);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-mute);
+}
+.provenance h4 {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  font-weight: 500;
+  margin: 0 0 10px 0;
+}
+.provenance a {
+  color: var(--cat-4);
+  text-decoration: underline;
+}
+
+.page-footer-nav {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.page-footer-nav .nav-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  transition: all 0.18s ease;
+}
+.page-footer-nav .nav-link:hover {
+  background: var(--paper-deep);
+  border-color: var(--ink-mute);
+  color: var(--ink);
+}
+.page-footer-nav .nav-link.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .paradigm-head, .paradigm-nav, main { padding-left: 32px; padding-right: 32px; }
+  .paradigm-head h1 { font-size: 44px; }
+  .competency-head { grid-template-columns: 1fr; gap: 8px; }
+  .competency .roman { font-size: 32px; }
+}
+@media (max-width: 480px) {
+  .paradigm-head, .paradigm-nav, main { padding-left: 16px; padding-right: 16px; }
+  .paradigm-head { padding-top: 32px; padding-bottom: 24px; }
+  .paradigm-head h1 { font-size: 34px; }
+}
